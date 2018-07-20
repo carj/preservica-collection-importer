@@ -1,7 +1,7 @@
 # preservica-collection-importer
 Create new collections In Preservica from a CSV data file
 
-
+|                       |   |   |
 |-----------------------|---|---|
 |GENERAL & ADMINISTRATIVE| | |
 |CORPORATE GOVERNANCE & LEGAL|CORPORATE COMMUNICATIONS| |
