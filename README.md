@@ -23,7 +23,7 @@ Note: You need to repeat the name of the parent collection in the left hand colu
 
 
 You can test the collection structure which will be created by using the --dry-run argument which will print the collection structure to the screen and not create it in Preservica.
-
+```
 GENERAL & ADMINISTRATIVE
 CORPORATE GOVERNANCE & LEGAL
 ----|CORPORATE COMMUNICATIONS
@@ -38,3 +38,4 @@ HUMAN RESOURCES
 ----|BENEFITS
 ----|----|PENSIONS
 ----|EMPLOYEE MANAGEMENT
+```
