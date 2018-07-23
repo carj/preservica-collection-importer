@@ -1,7 +1,12 @@
 # preservica-collection-importer
 
 Create new collections in a Preservica system from data held in a  CSV file.
-The collection data in CSV file must have the structure as shown below.
+```
+collection-loader.cmd -i file.csv [-c config.properties] [--dry-run]
+```
+
+
+The CSV file must have the structure as shown below.
 
 Column 1 is the name of the root collections. 
 Column 2 if it exists will be created below the collection in column 1 etc.
@@ -40,3 +45,7 @@ HUMAN RESOURCES
 ----|----|PENSIONS
 ----|EMPLOYEE MANAGEMENT
 ```
+
+Notes:
+The collection title and collection code will have the same value.
+
