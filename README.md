@@ -30,7 +30,7 @@ HUMAN RESOURCES,BENEFITS
 HUMAN RESOURCES,EMPLOYEE MANAGEMENT 
 HUMAN RESOURCES,BENEFITS,PENSIONS
 ```
-
+[The project contains a sample csv file](csv/collections.csv) as an example.
 
 You can test the collection structure which will be created in Preservica by using the --dry-run argument which will 
 print the collection structure to the screen and not create it in Preservica.
@@ -53,6 +53,31 @@ HUMAN RESOURCES
 ----|----|PENSIONS
 ----|EMPLOYEE MANAGEMENT
 ```
+
+When you are ready to write the collections into Preservica you will need to add your credentials 
+to the [config properties](config.properties).
+
+Add your Preservica username and password and select the region your Preservica system is
+deployed in.
+If you want the collections in the csv file to be added inside an existing Preservica collection 
+then add that collection's reference to the preservica.root.collection other leave this value blank.
+
+
+
+```
+preservica.username=
+preservica.password=
+
+## The Preservica region
+## options { EU, US, AU, CA }
+preservica.region=US
+
+# The collection reference in Preservica
+# to add the collections in the csv file under
+# leave blank to start at the root
+preservica.root.collection=
+```
+
 
 Notes:
 * The collection title and collection code will have the same value.
