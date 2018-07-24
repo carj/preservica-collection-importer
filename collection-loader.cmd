@@ -115,7 +115,7 @@ ECHO.
 SET /P JAVA_HOME=<"%SCRIPTDIR%\javahome.txt"
 :END
 
-"%JAVA_HOME%\bin\java" -cp .;lib/* CreateCollections %*
+"%JAVA_HOME%\bin\java" -cp "collection-loader.jar;./lib/*" CreateCollections %*
 
 
 
