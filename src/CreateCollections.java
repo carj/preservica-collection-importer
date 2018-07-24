@@ -92,8 +92,11 @@ class Collection {
 }
 
 /**
- * Populate Preservica with Collections based on information
- * in a spreadsheet
+ *  Populate Preservica with Collections based on information
+ *  in a csv file
+ *
+ *  See https://github.com/carj/preservica-collection-loader for details
+ *
  */
 public class CreateCollections {
 
@@ -111,7 +114,7 @@ public class CreateCollections {
      */
     public static void main(String[] args) {
 
-        File inputFile = null;
+        File inputCSVFile = null;
         Properties properties = null;
 
         CommandLineParser parser = new DefaultParser();
@@ -131,19 +134,22 @@ public class CreateCollections {
             // parse the command line arguments
             CommandLine line = parser.parse(options, args);
 
+            // Display the help
             if (line.hasOption("h")) {
                 formatter.printHelp(cmdLine, "", options, "\nUse the --dry-run argument to check your csv file syntax");
                 System.exit(1);
             }
 
+            // is this a dry-run only
             if (line.hasOption("d")) {
                 testRun = true;
             }
 
+            // read the csv file
             if (line.hasOption("i")) {
                 String inputFileName = line.getOptionValue("i");
-                inputFile = new File(inputFileName);
-                if (!inputFile.exists()) {
+                inputCSVFile = new File(inputFileName);
+                if (!inputCSVFile.exists()) {
                     System.out.println(String.format("The input csv file name %s does not exist", inputFileName));
                     System.exit(1);
                 }
@@ -152,60 +158,40 @@ public class CreateCollections {
                 System.exit(1);
             }
 
+            // Read the config file properties
             properties = new Properties();
             if (line.hasOption("c")) {
                 String inputFileName = line.getOptionValue("c");
                 File configFile = new File(inputFileName);
-                if (!inputFile.exists()) {
+                if (!inputCSVFile.exists()) {
                     System.out.println(String.format("The config file with name %s does not exist", inputFileName));
                     System.exit(1);
                 }
-
                 InputStream is = new FileInputStream(configFile);
                 properties.load(is);
                 is.close();
-
                 if (!testRun) {
-                    if (properties.getProperty("preservica.username").isEmpty()) {
-                        System.out.println("add a valid username to the config file");
-                        System.exit(1);
-                    }
-                    if (properties.getProperty("preservica.password").isEmpty()) {
-                        System.out.println("add a valid password to the config file");
-                        System.exit(1);
-                    }
+                    printConfigErrors(properties);
                 }
-
-
             } else {
-
                 File configFile = new File("config.properties");
-                if (!inputFile.exists()) {
+                if (!inputCSVFile.exists()) {
                     System.out.println(String.format("The default config file does not exist"));
                     formatter.printHelp(cmdLine, options);
                     System.exit(1);
-
                 } else {
                     InputStream is = new FileInputStream(configFile);
                     properties.load(is);
                     is.close();
-
                     if (!testRun) {
-                        if (properties.getProperty("preservica.username").isEmpty()) {
-                            System.out.println("add a valid username to the config file");
-                            System.exit(1);
-                        }
-                        if (properties.getProperty("preservica.password").isEmpty()) {
-                            System.out.println("add a valid password to the config file");
-                            System.exit(1);
-                        }
+                        printConfigErrors(properties);
                     }
-
                 }
             }
 
+            // parse the csv file
             CreateCollections createCollections = new CreateCollections(properties);
-            createCollections.create(properties, inputFile, testRun);
+            createCollections.create(properties, inputCSVFile, testRun);
 
         } catch (Exception exp) {
             System.out.println(exp.getMessage());
@@ -215,9 +201,32 @@ public class CreateCollections {
 
 
     /**
-     *  Constructor
+     *  print errors for mis-configured properties file
      *
-     * @param config
+     * @param prop
+     */
+    private static void printConfigErrors(Properties prop) {
+
+        Boolean exit = false;
+
+        if (prop.getProperty("preservica.username").isEmpty()) {
+            System.out.println("add a valid username to the config file");
+            exit = true;
+        }
+        if (prop.getProperty("preservica.password").isEmpty()) {
+            System.out.println("add a valid password to the config file");
+            exit = true;
+        }
+
+        if (exit) {
+            System.exit(1);
+        }
+    }
+
+    /**
+     *  Class Constructor
+     *
+     * @param config file
      */
     public CreateCollections(Properties config) {
         String username = config.getProperty("preservica.username");
@@ -246,9 +255,9 @@ public class CreateCollections {
     /**
      * Read the CSV file and create a list of collections
      *
-     * @param config
-     * @param csvFile
-     * @param testRun
+     * @param config    The properties file
+     * @param csvFile   The CSV file
+     * @param testRun   Is this a test only
      * @throws Exception
      */
     private void create(Properties config, File csvFile, Boolean testRun) throws Exception {
@@ -296,8 +305,8 @@ public class CreateCollections {
     /**
      * Create the Preservica collections.
      *
-     * @param tree
-     * @param root
+     * @param tree  List of collections
+     * @param root  The root node
      * @param parentRef
      */
     private void createCollections(Set<Collection> tree, Collection root, String parentRef) {
